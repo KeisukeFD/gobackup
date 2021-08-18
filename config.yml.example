@@ -1,0 +1,24 @@
+---
+information:
+  client_name:
+  server_name:
+  rclone_connection_name:
+  bucket_name:
+  exclusion_file:
+  keep_daily: 90 # 90 days by default
+
+backup:
+  pre_exec:
+  post_exec:
+
+binaries:
+  restic: "/usr/bin/restic"
+
+email:
+  enabled: false
+  sender: "backups@local.dev"
+  password: ""
+  to: "you@gmail.com"
+  host: "127.0.0.1"
+  port: 1025
+  max_try: 5
