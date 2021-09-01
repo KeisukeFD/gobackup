@@ -30,16 +30,17 @@ type ResticStats struct {
 	RemovedSnapshots int
 }
 
-func ConvertUnitRate(amount int, unit string) (result int) {
+func ConvertUnitRate(amount int, unit string) (int) {
+        var result int64
 	switch unit {
 	case "TiB":
-		result = amount * (1 << 40)
+		result = int64(amount) * (1 << 40)
 	case "GiB":
-		result = amount * (1 << 30)
+		result = int64(amount) * (1 << 30)
 	case "MiB":
-		result = amount * (1 << 20)
+		result = int64(amount) * (1 << 20)
 	case "KiB":
-		result = amount * (1 << 10)
+		result = int64(amount) * (1 << 10)
 	}
-	return result
+	return int(result)
 }
