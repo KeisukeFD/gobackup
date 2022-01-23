@@ -2,6 +2,7 @@
 name: Release Go Backup
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "*"  # triggers only if push new tag version, like `0.8.4` or else
@@ -30,3 +31,41 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GO_RELEASER_GITHUB_TOKEN }}
+  push_to_registry:
+    needs: build
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1.12.0
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_PASSWD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3.6.2
+        with:
+          images: keisukefd/gobackup
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          labels: |
+            maintainer=KeisukeFD
+            org.opencontainers.image.description="Packaging GoBackup (rclone and restic) \n https://github.com/KeisukeFD/gobackup"
+
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2.8.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
