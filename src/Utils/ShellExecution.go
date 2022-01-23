@@ -27,7 +27,7 @@ func ExecuteCommandWithEnv(command string, envs map[string]string) (CommandResul
 	if envs != nil {
 		cmd.Env = os.Environ()
 		for k, v := range envs {
-			cmd.Env = append(cmd.Env, k+"='"+v+"'")
+			cmd.Env = append(cmd.Env, k+"="+v+"")
 		}
 	}
 
