@@ -30,7 +30,6 @@ type BackupConfig struct {
 		RCloneConnectionName string `yaml:"rclone_connection_name" required:"true"`
 		BucketName           string `yaml:"bucket_name" required:"true"`
 		ExclusionFile        string `yaml:"exclusion_file"`
-		KeepDaily            int    `yaml:"keep_daily"`
 	} `yaml:"information"`
 	Binaries struct {
 		Restic string `yaml:"restic"  required:"true"`
@@ -48,6 +47,7 @@ type BackupConfig struct {
 		PreExecution  string `yaml:"pre_exec"`
 		PostExecution string `yaml:"post_exec"`
 	} `yaml:"backup"`
+	ResticOptions []string `yaml:"restic_opts"`
 }
 
 var instance *Config

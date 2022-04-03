@@ -5,7 +5,8 @@ information:
   rclone_connection_name:
   bucket_name:
   exclusion_file:
-  keep_daily: 90 # 90 days by default
+
+restic_opts: []
 
 backup:
   pre_exec:

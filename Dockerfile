@@ -4,9 +4,9 @@ LABEL "org.opencontainers.image.authors"="KeisukeFD"
 LABEL "org.opencontainers.image.description"="Packaging GoBackup (rclone and restic) \
 https://github.com/KeisukeFD/gobackup"
 
-ARG restic_version=0.12.1
-ARG rclone_version=1.57.0
-ARG gobackup_version=1.0.1
+ARG restic_version=0.13.0
+ARG rclone_version=1.58.0
+ARG gobackup_version=1.0.2
 
 RUN apt-get update && apt-get install -y \
   curl \

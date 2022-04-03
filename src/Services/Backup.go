@@ -112,6 +112,8 @@ func (bm *BackupManager) StartBackup() {
 	if bm.Config.BackupConfig.Information.ExclusionFile != "" {
 		options += "--exclude-file=" + bm.Config.BackupConfig.Information.ExclusionFile
 	}
+	options += fmt.Sprintf(" --tag=%s", bm.Config.BackupConfig.Information.ServerName)
+
 	var foldersToBackup []string
 	for _, f := range bm.Config.FoldersToBackup {
 		if strings.Contains(f, " ") {
@@ -154,11 +156,13 @@ func (bm *BackupManager) Cleanup() {
 	startTime := time.Now()
 
 	var options string
-	if bm.Config.BackupConfig.Information.KeepDaily > 0 {
-		options += fmt.Sprintf("--keep-daily=%d", bm.Config.BackupConfig.Information.KeepDaily)
+	if len(bm.Config.BackupConfig.ResticOptions) > 0 {
+		options += strings.Join(bm.Config.BackupConfig.ResticOptions, " ")
 	} else {
-		options += fmt.Sprintf("--keep-daily=%d", Utils.ResticOptionsKeepDaily)
+		options += strings.Join(Utils.DefaultResticOptions, " ")
 	}
+	options += fmt.Sprintf(" --tag=%s", bm.Config.BackupConfig.Information.ServerName)
+
 	cmd := createBashCommand(
 		"forget",
 		options,

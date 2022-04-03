@@ -2,7 +2,9 @@ package Utils
 
 import "regexp"
 
-var ResticOptionsKeepDaily = 90 // 90 days by default
+var DefaultResticOptions = []string{
+	"--keep-daily=90",
+}
 
 var (
 	ResticVersionReg     = regexp.MustCompile(`restic\s(\d+\.\d+\.\d+)\s.*`)
@@ -30,8 +32,8 @@ type ResticStats struct {
 	RemovedSnapshots int
 }
 
-func ConvertUnitRate(amount int, unit string) (int) {
-        var result int64
+func ConvertUnitRate(amount int, unit string) int {
+	var result int64
 	switch unit {
 	case "TiB":
 		result = int64(amount) * (1 << 40)
