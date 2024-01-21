@@ -6,7 +6,7 @@ LABEL "org.opencontainers.image.description"="Packaging GoBackup (rclone and res
 
 ARG restic_version=0.16.3
 ARG rclone_version=1.65.1
-ARG gobackup_version=1.0.2
+ARG gobackup_version=1.0.6
 
 RUN apt-get update && apt-get install -y \
   curl \
@@ -26,7 +26,7 @@ RUN curl -L "https://github.com/rclone/rclone/releases/download/v${rclone_versio
   && mv /tmp/rclone /usr/bin/rclone \
   && chmod +x /usr/bin/rclone
 
-RUN curl -L "https://github.com/KeisukeFD/gobackup/releases/download/v${gobackup_version}/gobackup_${gobackup_version}_linux_amd64.tar.gz" -o /tmp/gobackup.tar.gz \
+RUN curl -L "https://github.com/KeisukeFD/gobackup/releases/download/v${gobackup_version}/gobackup_Linux_x86_64.tar.gz" -o /tmp/gobackup.tar.gz \
   && cd /tmp \
   && tar -xf gobackup.tar.gz \
   && rm /tmp/gobackup.tar.gz \
