@@ -1,7 +1,9 @@
 package Utils
 
 import (
-	"bytes"
+	"bufio"
+	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -20,9 +22,6 @@ func ExecuteCommandWithEnv(command string, envs map[string]string) (CommandResul
 	trimmed := strings.TrimSpace(command)
 	parts := strings.Split(trimmed, " ")
 	cmd := exec.Command(parts[0], parts[1:]...)
-	var buf bytes.Buffer
-	cmd.Stdout = &buf
-	cmd.Stderr = &buf
 
 	if envs != nil {
 		cmd.Env = os.Environ()
@@ -30,17 +29,27 @@ func ExecuteCommandWithEnv(command string, envs map[string]string) (CommandResul
 			cmd.Env = append(cmd.Env, k+"="+v+"")
 		}
 	}
-
 	var result CommandResult
-	if err := cmd.Run(); err != nil {
-		result.Output = buf.String()
+	stderr, _ := cmd.StderrPipe()
+	stdout, _ := cmd.StdoutPipe()
+	scanner := bufio.NewScanner(io.MultiReader(stdout, stderr))
+
+	err := cmd.Start()
+	if err != nil {
+		result.Output = scanner.Text()
 		if exitError, ok := err.(*exec.ExitError); ok {
 			result.ExitCode = exitError.ExitCode()
 			return result, err
 		}
 	}
-	stdout := buf.String()
-	result.Output = stdout
+
+	for scanner.Scan() {
+		m := scanner.Text()
+		result.Output += m
+		fmt.Println(m)
+	}
+	cmd.Wait()
+
 	result.ExitCode = 0
 
 	return result, nil
